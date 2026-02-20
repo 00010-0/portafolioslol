@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antonio Sánchez · Coach LoL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A227;
+    --gold2: #e8c84a;
+    --cream: #F5EDD6;
+    --dark: #080810;
+    --dark2: #0f0f1c;
+    --dark3: #161625;
+    --dark4: #1d1d30;
+    --text: #c8c8e0;
+    --text-dim: #6a6a88;
+    --border: rgba(201,162,39,0.18);
+    --white: #f0f0ff;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,162,39,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.25s, height 0.25s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* BG GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,162,39,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,162,39,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NOISE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(8,8,16,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 0 48px;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(180px, 22vw, 320px);
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,162,39,0.07);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-content {
+    max-width: 700px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 48px; height: 1px;
+    background: var(--gold);
+  }
+  .eyebrow-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin-top: 24px;
+    font-weight: 400;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 52px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .stat { }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--gold); font-size: 28px; }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: none;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .btn-primary:hover { background: var(--gold2); transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: 1px solid var(--border);
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  .scroll-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    writing-mode: vertical-rl;
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* SECTIONS COMMON */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 56px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 36px; height: 1px;
+    background: var(--gold);
+  }
+  .section-label span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* SOBRE MÍ */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 24px;
+  }
+  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--white); }
+
+  .about-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    background: rgba(201,162,39,0.07);
+    text-transform: uppercase;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+  .rank-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rank-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), transparent);
+  }
+  .rank-card::after {
+    content: 'MASTER';
+    position: absolute;
+    bottom: -20px; right: -10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,162,39,0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .rank-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .rank-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .rank-sub {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+  .rank-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+  .rank-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+  .rank-item-label { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; }
+  .rank-item-value { color: var(--white); font-weight: 600; }
+
+  /* SERVICIOS */
+  #servicios { background: transparent; }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 16px;
+    background: var(--border);
+  }
+  @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
+
+  .service-card {
+    background: var(--dark2);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .service-card:hover { background: var(--dark3); }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    background: linear-gradient(to top, rgba(201,162,39,0.06), transparent);
+    transition: height 0.3s;
+  }
+  .service-card:hover::after { height: 100%; }
+
+  .service-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .service-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .service-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+  .service-includes {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+  .service-includes li {
+    font-size: 13px;
+    color: var(--text);
+    padding: 5px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .service-includes li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 8px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .service-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .service-price span {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-left: 6px;
+  }
+
+  /* PROCESO */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 16px;
+    position: relative;
+  }
+  @media (max-width: 768px) { .process-steps { grid-template-columns: 1fr 1fr; gap: 24px; } }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+  @media (max-width: 768px) { .process-steps::before { display: none; } }
+
+  .step {
+    padding: 0 32px 0 0;
+    position: relative;
+  }
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .step-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  /* CONTACTO */
+  #contacto {
+    padding-bottom: 80px;
+  }
+  .contact-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 24px;
+  }
+  @media (max-width: 768px) { .contact-wrap { grid-template-columns: 1fr; gap: 40px; } }
+
+  .contact-info p {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+  }
+
+  .contact-channels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .channel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .channel:hover { border-color: var(--gold); background: var(--dark4); color: var(--white); }
+  .channel-icon { font-size: 20px; }
+  .channel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .channel-value { font-size: 14px; font-weight: 600; }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .form-input, .form-textarea {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--text-dim); }
+  .form-input:focus, .form-textarea:focus { border-color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  footer span { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* SEPARATORS */
+  .sep {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    position: relative;
+    z-index: 1;
+    margin: 0 48px;
+    width: calc(100% - 96px);
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px; }
+    section { padding: 80px 24px; }
+    .hero-stats { gap: 32px; }
+    footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+    .sep { margin: 0 24px; width: calc(100% - 48px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">A.<span>S</span></div>
+  <ul class="nav-links">
+    <li><a href="#sobre-mi">Sobre mí</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-text">MASTER</div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-text">League of Legends · Coaching Profesional</span>
+    </div>
+    <h1>
+      Antonio<br>
+      <em>Sánchez</em>
+    </h1>
+    <p class="hero-desc">
+      Coach de League of Legends con más de 2 años de experiencia. Ex-jugador Master. Te ayudo a subir de rango entendiendo el juego de verdad.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">2<span>+</span></div>
+        <div class="stat-label">Años coaching</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--gold)">M</div>
+        <div class="stat-label">Rango alcanzado</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100<span>%</span></div>
+        <div class="stat-label">Dedicación</div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#contacto" class="btn-primary">Reservar sesión</a>
+      <a href="#servicios" class="btn-secondary">Ver servicios</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <div class="scroll-text">Scroll</div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- SOBRE MÍ -->
+<section id="sobre-mi">
+  <div class="section-label reveal"><span>01 · Sobre mí</span></div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <h2 class="section-title">Jugador <em>Master</em>, coach de resultados</h2>
+      <p>Soy Antonio Sánchez, coach de League of Legends con <strong>más de 2 años de experiencia</strong> trabajando con jugadores de todos los rangos. He llegado a <strong>Master</strong> en la ladder competitiva y llevo ese conocimiento directamente a las sesiones.</p>
+      <p>Mi enfoque no es decirte qué campeones jugar. Es enseñarte a <strong>leer el mapa, tomar decisiones correctas bajo presión</strong> y convertir el conocimiento teórico en victorias reales y consistentes.</p>
+      <p>Trabajo tanto con jugadores individuales como con equipos que quieren mejorar su coordinación y comunicación.</p>
+      <div class="about-badges">
+        <span class="badge">Master Peak</span>
+        <span class="badge">Macro</span>
+        <span class="badge">Teamfight</span>
+        <span class="badge">Drafting</span>
+        <span class="badge">Comunicación</span>
+        <span class="badge">VOD Review</span>
+      </div>
+    </div>
+    <div class="about-visual reveal">
+      <div class="rank-card">
+        <div class="rank-label">Rango máximo alcanzado</div>
+        <div class="rank-value">Master</div>
+        <div class="rank-sub">League of Legends · EUW</div>
+        <div class="rank-divider"></div>
+        <div class="rank-item">
+          <span class="rank-item-label">Experiencia como coach</span>
+          <span class="rank-item-value">+2 años</span>
+        </div>
+        <div class="rank-item">
+          <span class="rank-item-label">Especialidad</span>
+          <span class="rank-item-value">Macro · Teamfight · Draft</span>
+        </div>
+        <div class="rank-item">
+          <span class="rank-item-label">Idioma</span>
+          <span class="rank-item-value">Español</span>
+        </div>
+        <div class="rank-item">
+          <span class="rank-item-label">Disponibilidad</span>
+          <span class="rank-item-value">Consultar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-label reveal"><span>02 · Servicios</span></div>
+  <h2 class="section-title reveal">Todo lo que <em>necesitas</em></h2>
+  <div class="services-grid reveal">
+
+    <div class="service-card">
+      <span class="service-icon">🎥</span>
+      <div class="service-name">VOD Review</div>
+      <div class="service-desc">Análisis detallado de tus partidas. Identificamos errores de macro, decisiones incorrectas y patrones que te están costando LP.</div>
+      <ul class="service-includes">
+        <li>Revisión de 1-2 partidas completas</li>
+        <li>Análisis de decisiones de macro</li>
+        <li>Feedback escrito con timestamps</li>
+        <li>Objetivos para las próximas partidas</li>
+      </ul>
+      <div class="service-price">100€ <span>/ sesión</span></div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-icon">🎮</span>
+      <div class="service-name">Sesión en Vivo</div>
+      <div class="service-desc">Coaching en tiempo real mientras juegas. Feedback instantáneo sobre tus decisiones y corrección de errores en el momento.</div>
+      <ul class="service-includes">
+        <li>1-2 partidas con coaching en directo</li>
+        <li>Comunicación por Discord</li>
+        <li>Análisis post-partida inmediato</li>
+        <li>Plan de mejora personalizado</li>
+      </ul>
+      <div class="service-price">100€ <span>/ sesión</span></div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-icon">👥</span>
+      <div class="service-name">Coaching de Equipo</div>
+      <div class="service-desc">Para equipos que quieren mejorar su coordinación, comunicación y estrategia colectiva. Drafting, macro y teamfight.</div>
+      <ul class="service-includes">
+        <li>Análisis de comunicación y roles</li>
+        <li>Protocolo de drafting personalizado</li>
+        <li>VOD review de partidas del equipo</li>
+        <li>Sesión en vivo con el equipo completo</li>
+      </ul>
+      <div class="service-price">100€ <span>/ sesión</span></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PROCESO -->
+<section id="proceso">
+  <div class="section-label reveal"><span>03 · Cómo funciona</span></div>
+  <h2 class="section-title reveal">El <em>proceso</em></h2>
+  <div class="process-steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Contacto inicial</div>
+      <div class="step-desc">Me escribes por Discord o el formulario. Hablamos de tu rango, objetivos y qué quieres mejorar.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Diagnóstico</div>
+      <div class="step-desc">Reviso tu perfil y partidas recientes para identificar tus principales áreas de mejora antes de la sesión.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Sesión</div>
+      <div class="step-desc">Ejecutamos la sesión contratada. VOD review, coaching en vivo o sesión de equipo según lo acordado.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Seguimiento</div>
+      <div class="step-desc">Recibes un resumen con los puntos clave y objetivos concretos y medibles para aplicar en tus próximas partidas.</div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="section-label reveal"><span>04 · Contacto</span></div>
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <h2 class="section-title">¿Listo para<br><em>subir de rango?</em></h2>
+      <p>Escríbeme y en menos de 24 horas te respondo. Dime tu rango actual, qué quieres mejorar y cuándo tienes disponibilidad.</p>
+      <div class="contact-channels">
+        <a href="https://discord.com/users/antoniosanchez" target="_blank" class="channel">
+          <span class="channel-icon">💬</span>
+          <div>
+            <span class="channel-label">Discord</span>
+            <span class="channel-value">antoniosanchez</span>
+          </div>
+        </a>
+        <a href="https://mail.google.com/mail/?view=cm&to=8corama@gmail.com" target="_blank" class="channel">
+          <span class="channel-icon">📧</span>
+          <div>
+            <span class="channel-label">Email</span>
+            <span class="channel-value">8corama@gmail.com</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <form class="contact-form reveal" onsubmit="handleForm(event)">
+      <div class="form-group">
+        <label class="form-label">Tu nombre</label>
+        <input class="form-input" type="text" placeholder="Nombre o alias...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Discord / Email</label>
+        <input class="form-input" type="text" placeholder="Tu contacto...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Rango actual</label>
+        <input class="form-input" type="text" placeholder="Ej: Platino 2, Diamante 4...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Qué quieres mejorar?</label>
+        <textarea class="form-textarea" rows="4" placeholder="Cuéntame en qué quieres trabajar..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary" style="cursor:none">Enviar mensaje</button>
+      <div id="form-success" style="display:none;color:var(--gold);font-size:13px;font-family:'JetBrains Mono',monospace;margin-top:8px">✓ Mensaje enviado — te respondo en menos de 24h</div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2025 <span>Antonio Sánchez</span> · Coach LoL</div>
+  <div>Hecho con dedicación · <span>Master Peak</span></div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button, .service-card, .channel').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '18px';
+      cursor.style.height = '18px';
+      ring.style.width = '52px';
+      ring.style.height = '52px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px';
+      cursor.style.height = '10px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // REVEAL ON SCROLL
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => obs.observe(el));
+
+  // SMOOTH NAV
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const el = document.querySelector(a.getAttribute('href'));
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  // FORM
+  function handleForm(e) {
+    e.preventDefault();
+    document.getElementById('form-success').style.display = 'block';
+    e.target.querySelector('button').disabled = true;
+    e.target.querySelector('button').textContent = 'Enviado ✓';
+  }
+</script>
+</body>
+</html>
